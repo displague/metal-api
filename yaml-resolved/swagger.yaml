@@ -11,7 +11,8 @@ info:
   license:
     name: Equinix Metal
     url: https://metal.equinix.com/legal/
-host: api.equinix.com/metal/v1
+host: api.equinix.com
+basePath: /metal/v1
 tags:
 - name: Batches
   description: Manage device batches. See project endpoints to list batches for a particular project. Check out the product docs to learn more about [Batch Deployment](https://metal.equinix.com/developers/docs/deploy/batch-deployment/).
@@ -848,7 +849,7 @@ paths:
           description: forbidden
         "404":
           description: not found
-  /connections/{id}/ports/{id}/events:
+  /connections/{id}/ports/{portId}/events:
     get:
       tags:
       - Events
@@ -863,7 +864,7 @@ paths:
         required: true
         type: string
         format: uuid
-      - name: id
+      - name: portId
         in: path
         description: Connection Port UUID
         required: true
