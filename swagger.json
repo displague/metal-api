@@ -124,6 +124,7 @@
   "security" : [ {
     "x_auth_token" : [ ]
   } ],
+  "schemes" : [ "https" ],
   "host" : "api.equinix.com",
   "basePath" : "/metal/v1",
   "consumes" : [ "application/json" ],
@@ -565,7 +566,7 @@
       "get" : {
         "summary" : "View capacity",
         "description" : "Returns a list of facilities and plans with their current capacity.",
-        "operationId" : "findCapacity",
+        "operationId" : "findCapacityForFacility",
         "tags" : [ "Capacity" ],
         "responses" : {
           "200" : {
@@ -581,13 +582,13 @@
       },
       "post" : {
         "summary" : "Check capacity",
-        "description" : "Validates if a deploy can be fulfilled.\n\nResponse:\n```\n\"servers\": [\n    { \"available\": true, ... },\n    { \"available\": false, ... }\n]\n```",
-        "operationId" : "checkCapacity",
+        "description" : "Validates if a deploy can be fulfilled.",
+        "operationId" : "checkCapacityForFacility",
         "tags" : [ "Capacity" ],
         "parameters" : [ {
           "name" : "facility",
           "in" : "body",
-          "description" : "Facility to create",
+          "description" : "Facility to check capacity in",
           "required" : true,
           "schema" : {
             "$ref" : "#/definitions/CapacityInput"
@@ -595,7 +596,10 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "ok"
+            "description" : "ok",
+            "schema" : {
+              "$ref" : "#/definitions/CapacityCheckPerFacilityList"
+            }
           },
           "401" : {
             "description" : "unauthorized"
@@ -1027,14 +1031,14 @@
         }
       }
     },
-    "/connections/{id}/events" : {
+    "/connections/{connection_id}/events" : {
       "get" : {
         "summary" : "Retrieve connection events",
         "description" : "Returns a list of the connection events",
         "operationId" : "findConnectionEvents",
         "tags" : [ "Events", "Connections" ],
         "parameters" : [ {
-          "name" : "id",
+          "name" : "connection_id",
           "in" : "path",
           "description" : "Connection UUID",
           "required" : true,
@@ -1078,21 +1082,21 @@
         }
       }
     },
-    "/connections/{id}/ports/{portId}/events" : {
+    "/connections/{connection_id}/ports/{id}/events" : {
       "get" : {
         "summary" : "Retrieve connection port events",
         "description" : "Returns a list of the connection port events",
         "operationId" : "findConnectionPortEvents",
         "tags" : [ "Events", "Connections" ],
         "parameters" : [ {
-          "name" : "id",
+          "name" : "connection_id",
           "in" : "path",
           "description" : "Connection UUID",
           "required" : true,
           "type" : "string",
           "format" : "uuid"
         }, {
-          "name" : "portId",
+          "name" : "id",
           "in" : "path",
           "description" : "Connection Port UUID",
           "required" : true,
@@ -1904,14 +1908,14 @@
         }
       }
     },
-    "/connections/{id}" : {
+    "/connections/{connection_id}" : {
       "get" : {
         "summary" : "Get connection",
         "description" : "Get the details of a connection",
         "operationId" : "getInterconnection",
         "tags" : [ "Connections" ],
         "parameters" : [ {
-          "name" : "id",
+          "name" : "connection_id",
           "in" : "path",
           "description" : "Connection UUID",
           "required" : true,
@@ -1939,7 +1943,7 @@
         "operationId" : "updateInterconnection",
         "tags" : [ "Connections" ],
         "parameters" : [ {
-          "name" : "id",
+          "name" : "connection_id",
           "in" : "path",
           "description" : "Connection UUID",
           "required" : true,
@@ -1975,7 +1979,7 @@
         "operationId" : "deleteInterconnection",
         "tags" : [ "Connections" ],
         "parameters" : [ {
-          "name" : "id",
+          "name" : "connection_id",
           "in" : "path",
           "description" : "Connection UUID",
           "required" : true,
@@ -4228,6 +4232,42 @@
           },
           "403" : {
             "description" : "forbidden"
+          },
+          "404" : {
+            "description" : "not found"
+          }
+        }
+      }
+    },
+    "/ports/{id}" : {
+      "get" : {
+        "summary" : "Retrieve a port",
+        "description" : "Returns a port",
+        "operationId" : "findPortById",
+        "tags" : [ "Ports" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Port UUID",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "include",
+          "in" : "query",
+          "description" : "related attributes to include",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "ok",
+            "schema" : {
+              "$ref" : "#/definitions/Port"
+            }
+          },
+          "401" : {
+            "description" : "unauthorized"
           },
           "404" : {
             "description" : "not found"
@@ -6938,6 +6978,7 @@
               },
               "user_ssh_keys" : {
                 "type" : "array",
+                "description" : "The UUIDs of users whose SSH keys should be included on the provisioned device.",
                 "items" : {
                   "type" : "string",
                   "format" : "uuid"
@@ -6950,7 +6991,7 @@
                 }
               },
               "customdata" : {
-                "type" : "string"
+                "type" : "object"
               },
               "ip_addresses" : {
                 "type" : "array",
@@ -6961,18 +7002,20 @@
                       "type" : "number",
                       "format" : "integer",
                       "description" : "Address Family for IP Address",
-                      "example" : "4 or 6"
+                      "enum" : [ 4, 6 ],
+                      "example" : 4
                     },
                     "public" : {
                       "type" : "boolean",
                       "description" : "Address Type for IP Address",
-                      "example" : "true or false"
+                      "example" : false,
+                      "default" : true
                     },
                     "cidr" : {
                       "type" : "number",
                       "format" : "integer",
-                      "description" : "Cidr Size for the IP Block created. Valid values depends on the operating system been provisioned.",
-                      "example" : "28..32 for IPv4 addresses"
+                      "description" : "Cidr Size for the IP Block created. Valid values depends on the operating system been provisioned (28..32 for IPv4 addresses, 124..127 for IPv6 addresses).",
+                      "example" : 28
                     },
                     "ip_reservations" : {
                       "type" : "array",
@@ -7364,7 +7407,7 @@
           "format" : "date-time"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         },
         "provisioning_percentage" : {
           "type" : "number",
@@ -7468,7 +7511,7 @@
           "type" : "boolean"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         },
         "hardware_reservation_id" : {
           "type" : "string",
@@ -7501,6 +7544,7 @@
         },
         "user_ssh_keys" : {
           "type" : "array",
+          "description" : "The UUIDs of users whose SSH keys should be included on the provisioned device.",
           "items" : {
             "type" : "string",
             "format" : "uuid"
@@ -7514,11 +7558,17 @@
         },
         "public_ipv4_subnet_size" : {
           "type" : "number",
-          "format" : "integer"
+          "format" : "integer",
+          "description" : "Deprecated. Use ip_addresses. Subnet range for addresses allocated to this device. Your project must have addresses available for a non-default request.",
+          "default" : 31,
+          "x-deprecated" : true
         },
         "private_ipv4_subnet_size" : {
           "type" : "number",
-          "format" : "integer"
+          "format" : "integer",
+          "description" : "Deprecated. Use ip_addresses. Subnet range for addresses allocated to this device.",
+          "default" : 28,
+          "x-deprecated" : true
         },
         "ip_addresses" : {
           "type" : "array",
@@ -7529,18 +7579,20 @@
                 "type" : "number",
                 "format" : "integer",
                 "description" : "Address Family for IP Address",
-                "example" : "4 or 6"
+                "example" : 4,
+                "enum" : [ 4, 6 ]
               },
               "public" : {
                 "type" : "boolean",
                 "description" : "Address Type for IP Address",
-                "example" : "true or false"
+                "example" : false,
+                "default" : true
               },
               "cidr" : {
                 "type" : "number",
                 "format" : "integer",
-                "description" : "Cidr Size for the IP Block created. Valid values depends on the operating system been provisioned.",
-                "example" : "28..32 for IPv4 addresses"
+                "description" : "Cidr Size for the IP Block created. Valid values depends on the operating system being provisioned. (28..32 for IPv4 addresses, 124..127 for IPv6 addresses)",
+                "example" : 28
               },
               "ip_reservations" : {
                 "type" : "array",
@@ -7560,7 +7612,7 @@
           "type" : "number",
           "format" : "integer",
           "description" : "Address Family for IP Address",
-          "example" : "4 or 6"
+          "example" : 4
         }
       }
     },
@@ -7597,7 +7649,7 @@
           "type" : "boolean"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -8188,7 +8240,10 @@
         "peer_ips" : {
           "type" : "array",
           "description" : "A list of one or more IP addresses to use for the Peer IP section of your BGP configuration. For non-multihop sessions, this will typically be a single gateway address for the device. For multihop sessions, it will be a list of IPs.",
-          "example" : "[\"10.32.16.0\"] or [\"169.254.255.1\", \"169.254.255.2\"]"
+          "example" : "[\"10.32.16.0\"] or [\"169.254.255.1\", \"169.254.255.2\"]",
+          "items" : {
+            "type" : "string"
+          }
         },
         "routes_in" : {
           "type" : "array",
@@ -8466,7 +8521,7 @@
           "type" : "boolean"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -8516,7 +8571,7 @@
           "type" : "string"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         },
         "tags" : {
           "type" : "array",
@@ -8689,7 +8744,7 @@
           "format" : "float"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         },
         "enforce_2fa_at" : {
           "type" : "string",
@@ -8723,7 +8778,7 @@
           "$ref" : "#/definitions/Address"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         },
         "enforce_2fa_at" : {
           "type" : "string",
@@ -8942,6 +8997,10 @@
         "data" : {
           "type" : "object"
         },
+        "disbond_operation_supported" : {
+          "type" : "boolean",
+          "description" : "Indicates whether or not the bond can be broken on the port (when applicable)."
+        },
         "hardware" : {
           "$ref" : "#/definitions/Href"
         },
@@ -8979,6 +9038,16 @@
                 "type" : "boolean"
               }
             }
+          }
+        }
+      }
+    },
+    "PortList" : {
+      "properties" : {
+        "ports" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Port"
           }
         }
       }
@@ -9049,7 +9118,7 @@
           "$ref" : "#/definitions/Href"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9064,7 +9133,7 @@
           "format" : "uuid"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9083,7 +9152,7 @@
           "format" : "uuid"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9100,7 +9169,7 @@
           "type" : "boolean"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9243,6 +9312,7 @@
             },
             "user_ssh_keys" : {
               "type" : "array",
+              "description" : "The UUIDs of users whose SSH keys should be included on the provisioned device.",
               "items" : {
                 "type" : "string",
                 "format" : "uuid"
@@ -9255,7 +9325,7 @@
               }
             },
             "customdata" : {
-              "type" : "string"
+              "type" : "object"
             },
             "public_ipv4_subnet_size" : {
               "type" : "integer"
@@ -9517,7 +9587,7 @@
           "type" : "string"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9549,7 +9619,7 @@
           "$ref" : "#/definitions/SnapshotPolicyInput"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9569,7 +9639,7 @@
           "description" : "hourly"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -9617,7 +9687,7 @@
       }
     },
     "SupportRequestInput" : {
-      "required" : [ "user_id", "subject", "message" ],
+      "required" : [ "subject", "message" ],
       "properties" : {
         "subject" : {
           "type" : "string"
@@ -9817,17 +9887,17 @@
         }
       }
     },
-    "CapacityServerUnavailable" : {
+    "CapacityCheckPerFacilityList" : {
       "properties" : {
         "servers" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/ServerUnavailableInfo"
+            "$ref" : "#/definitions/CapacityCheckPerFacilityInfo"
           }
         }
       }
     },
-    "ServerUnavailableInfo" : {
+    "CapacityCheckPerFacilityInfo" : {
       "properties" : {
         "facility" : {
           "type" : "string"
@@ -10170,7 +10240,7 @@
           "type" : "string"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -10196,7 +10266,7 @@
           "format" : "binary"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
@@ -10254,7 +10324,7 @@
           "type" : "boolean"
         },
         "customdata" : {
-          "type" : "string"
+          "type" : "object"
         }
       }
     },
