@@ -14,6 +14,21 @@
       "url" : "https://metal.equinix.com/legal/"
     }
   },
+  "schemes" : [ "https" ],
+  "host" : "api.equinix.com",
+  "basePath" : "/metal/v1",
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "securityDefinitions" : {
+    "x_auth_token" : {
+      "type" : "apiKey",
+      "name" : "X-Auth-Token",
+      "in" : "header"
+    }
+  },
+  "security" : [ {
+    "x_auth_token" : [ ]
+  } ],
   "tags" : [ {
     "name" : "Batches",
     "description" : "Manage device batches. See project endpoints to list batches for a particular project. Check out the product docs to learn more about [Batch Deployment](https://metal.equinix.com/developers/docs/deploy/batch-deployment/)."
@@ -114,21 +129,6 @@
     "name" : "VPN",
     "description" : "VPN Management. Check out the product docs to learn more about [Doorman VPN](https://metal.equinix.com/developers/docs/networking/features/)."
   } ],
-  "securityDefinitions" : {
-    "x_auth_token" : {
-      "type" : "apiKey",
-      "name" : "X-Auth-Token",
-      "in" : "header"
-    }
-  },
-  "security" : [ {
-    "x_auth_token" : [ ]
-  } ],
-  "schemes" : [ "https" ],
-  "host" : "api.equinix.com",
-  "basePath" : "/metal/v1",
-  "consumes" : [ "application/json" ],
-  "produces" : [ "application/json" ],
   "paths" : {
     "/projects/{id}/batches" : {
       "get" : {
@@ -146,9 +146,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -185,9 +199,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -295,9 +323,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -472,9 +514,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -610,146 +666,6 @@
         }
       }
     },
-    "/emails" : {
-      "post" : {
-        "summary" : "Create an email",
-        "description" : "Add a new email address to the current user.",
-        "operationId" : "createEmail",
-        "tags" : [ "Emails" ],
-        "parameters" : [ {
-          "name" : "email",
-          "in" : "body",
-          "description" : "Email to create",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/CreateEmailInput"
-          }
-        } ],
-        "responses" : {
-          "201" : {
-            "description" : "created",
-            "schema" : {
-              "$ref" : "#/definitions/Email"
-            }
-          },
-          "401" : {
-            "description" : "unauthorized"
-          },
-          "422" : {
-            "description" : "unprocessable entity"
-          }
-        }
-      }
-    },
-    "/emails/{id}" : {
-      "get" : {
-        "summary" : "Retrieve an email",
-        "description" : "Provides one of the user’s emails.",
-        "operationId" : "findEmailById",
-        "tags" : [ "Emails" ],
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Email UUID",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "include",
-          "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "ok",
-            "schema" : {
-              "$ref" : "#/definitions/Email"
-            }
-          },
-          "401" : {
-            "description" : "unauthorized"
-          },
-          "403" : {
-            "description" : "forbidden"
-          },
-          "404" : {
-            "description" : "not found"
-          }
-        }
-      },
-      "put" : {
-        "summary" : "Update the email",
-        "description" : "Updates the email.",
-        "operationId" : "updateEmail",
-        "tags" : [ "Emails" ],
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Email UUID",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "email",
-          "in" : "body",
-          "description" : "email to update",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/UpdateEmailInput"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "ok",
-            "schema" : {
-              "$ref" : "#/definitions/Email"
-            }
-          },
-          "401" : {
-            "description" : "unauthorized"
-          },
-          "403" : {
-            "description" : "forbidden"
-          },
-          "404" : {
-            "description" : "not found"
-          },
-          "422" : {
-            "description" : "unprocessable entity"
-          }
-        }
-      },
-      "delete" : {
-        "summary" : "Delete the email",
-        "description" : "Deletes the email.",
-        "operationId" : "deleteEmail",
-        "tags" : [ "Emails" ],
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Email UUID",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "no content"
-          },
-          "401" : {
-            "description" : "unauthorized"
-          },
-          "403" : {
-            "description" : "forbidden"
-          },
-          "404" : {
-            "description" : "not found"
-          }
-        }
-      }
-    },
     "/devices/{id}/events" : {
       "get" : {
         "summary" : "Retrieve device's events",
@@ -766,21 +682,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -817,21 +755,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -868,21 +828,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -919,21 +901,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -963,21 +967,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1008,9 +1034,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1047,21 +1087,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1105,21 +1167,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1156,21 +1240,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1197,6 +1303,30 @@
         "description" : "Provides a listing of available datacenters where you can provision Packet devices.",
         "operationId" : "findFacilities",
         "tags" : [ "Facilities" ],
+        "parameters" : [ {
+          "name" : "include",
+          "in" : "query",
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "address", "labels" ]
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "address", "labels" ]
+          },
+          "collectionFormat" : "csv",
+          "default" : [ "address" ],
+          "required" : false
+        } ],
         "responses" : {
           "200" : {
             "description" : "ok",
@@ -1226,9 +1356,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1265,9 +1409,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1304,21 +1462,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1355,9 +1535,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1386,9 +1580,23 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1453,21 +1661,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1504,21 +1734,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -1597,9 +1849,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2304,9 +2570,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2395,21 +2675,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         }, {
           "name" : "project_id",
           "in" : "path",
@@ -2488,21 +2790,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         }, {
           "name" : "id",
           "in" : "path",
@@ -2581,21 +2905,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2632,9 +2978,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2699,9 +3059,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2814,9 +3188,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2895,21 +3283,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -2988,9 +3398,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -3090,21 +3514,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         }, {
           "name" : "project_id",
           "in" : "path",
@@ -3148,9 +3594,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -3552,9 +4012,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -3636,21 +4110,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -3713,9 +4209,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -3964,21 +4474,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4051,9 +4583,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4144,9 +4690,23 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4177,9 +4737,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4216,9 +4790,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4255,9 +4843,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4280,7 +4882,7 @@
         "summary" : "Assign a port to virtual network",
         "description" : "Assign a port for a hardware to virtual network.",
         "operationId" : "assignPort",
-        "tags" : [ "Ports" ],
+        "tags" : [ "Ports", "VLANs" ],
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -4291,7 +4893,7 @@
         }, {
           "name" : "vnid",
           "in" : "body",
-          "description" : "Virtual Network ID",
+          "description" : "Virtual Network ID. May be the UUID of the Virtual Network record, or the VLAN value itself (ex: '1001').",
           "required" : true,
           "schema" : {
             "$ref" : "#/definitions/PortAssignInput"
@@ -4324,7 +4926,7 @@
         "summary" : "Unassign a port",
         "description" : "Unassign a port for a hardware.",
         "operationId" : "unassignPort",
-        "tags" : [ "Ports" ],
+        "tags" : [ "Ports", "VLANs" ],
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -4335,7 +4937,7 @@
         }, {
           "name" : "vnid",
           "in" : "body",
-          "description" : "Virtual Network ID",
+          "description" : "Virtual Network ID. May be the UUID of the Virtual Network record, or the VLAN value itself (ex: '1001').",
           "required" : true,
           "schema" : {
             "$ref" : "#/definitions/PortAssignInput"
@@ -4538,7 +5140,7 @@
     "/ports/{id}/native-vlan" : {
       "post" : {
         "summary" : "Assign a native VLAN",
-        "description" : "Assigns a virtual network to this port as a \"native VLAN\"",
+        "description" : "Sets a virtual network on this port as a \"native VLAN\". The VLAN must have already been assigned using the using the \"Assign a port to a virtual network\" operation.",
         "operationId" : "assignNativeVlan",
         "tags" : [ "Ports", "VLANs" ],
         "parameters" : [ {
@@ -4551,7 +5153,7 @@
         }, {
           "name" : "vnid",
           "in" : "query",
-          "description" : "UUID or VNID of the virtual network to assign",
+          "description" : "Virtual Network ID. May be the UUID of the Virtual Network record, or the VLAN value itself (ex: '1001').",
           "required" : true,
           "type" : "string"
         } ],
@@ -4621,21 +5223,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4695,21 +5319,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4769,9 +5415,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -4871,21 +5531,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5055,9 +5737,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5127,9 +5823,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5195,9 +5905,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5270,9 +5994,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5303,9 +6041,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5412,9 +6164,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5493,9 +6259,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5560,9 +6340,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5762,21 +6556,43 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -5855,9 +6671,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6173,9 +7003,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6253,9 +7097,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6455,21 +7313,43 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         }, {
           "name" : "page",
           "in" : "query",
-          "description" : "page to display, default to 1, max 100_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Page to return",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 1,
+          "minimum" : 1,
+          "maximum" : 100000,
+          "required" : false
         }, {
           "name" : "per_page",
           "in" : "query",
-          "description" : "items per page, default to 10, max 1_000",
-          "required" : false,
-          "type" : "integer"
+          "description" : "Items returned per page",
+          "type" : "integer",
+          "format" : "int32",
+          "default" : 10,
+          "minimum" : 1,
+          "maximum" : 1000,
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6500,9 +7380,23 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6532,9 +7426,23 @@
         "parameters" : [ {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
-          "required" : false,
-          "type" : "string"
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
         } ],
         "responses" : {
           "200" : {
@@ -6638,7 +7546,27 @@
         }, {
           "name" : "include",
           "in" : "query",
-          "description" : "related attributes to include",
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "facility",
+          "in" : "query",
+          "description" : "Filter by Facility ID (uuid) or Facility Code",
           "required" : false,
           "type" : "string"
         } ],
@@ -6678,7 +7606,7 @@
             "$ref" : "#/definitions/VirtualNetworkCreateInput"
           }
         } ],
-        "summary" : "Create an virtual network",
+        "summary" : "Create a virtual network",
         "description" : "Creates an virtual network.",
         "operationId" : "createVirtualNetwork",
         "responses" : {
@@ -6836,6 +7764,160 @@
           }
         }
       }
+    },
+    "/emails" : {
+      "post" : {
+        "summary" : "Create an email",
+        "description" : "Add a new email address to the current user.",
+        "operationId" : "createEmail",
+        "tags" : [ "Emails" ],
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "body",
+          "description" : "Email to create",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CreateEmailInput"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "created",
+            "schema" : {
+              "$ref" : "#/definitions/Email"
+            }
+          },
+          "401" : {
+            "description" : "unauthorized"
+          },
+          "422" : {
+            "description" : "unprocessable entity"
+          }
+        }
+      }
+    },
+    "/emails/{id}" : {
+      "get" : {
+        "summary" : "Retrieve an email",
+        "description" : "Provides one of the user’s emails.",
+        "operationId" : "findEmailById",
+        "tags" : [ "Emails" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Email UUID",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "include",
+          "in" : "query",
+          "description" : "Nested attributes to include. Included objects will return their full attributes. Attribute names can be dotted (up to 3 levels) to included deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        }, {
+          "name" : "exclude",
+          "in" : "query",
+          "description" : "Nested attributes to exclude. Excluded objects will return only the href attribute. Attribute names can be dotted (up to 3 levels) to exclude deeply nested objects.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv",
+          "required" : false
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "ok",
+            "schema" : {
+              "$ref" : "#/definitions/Email"
+            }
+          },
+          "401" : {
+            "description" : "unauthorized"
+          },
+          "403" : {
+            "description" : "forbidden"
+          },
+          "404" : {
+            "description" : "not found"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update the email",
+        "description" : "Updates the email.",
+        "operationId" : "updateEmail",
+        "tags" : [ "Emails" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Email UUID",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "email",
+          "in" : "body",
+          "description" : "email to update",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/UpdateEmailInput"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "ok",
+            "schema" : {
+              "$ref" : "#/definitions/Email"
+            }
+          },
+          "401" : {
+            "description" : "unauthorized"
+          },
+          "403" : {
+            "description" : "forbidden"
+          },
+          "404" : {
+            "description" : "not found"
+          },
+          "422" : {
+            "description" : "unprocessable entity"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete the email",
+        "description" : "Deletes the email.",
+        "operationId" : "deleteEmail",
+        "tags" : [ "Emails" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Email UUID",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "no content"
+          },
+          "401" : {
+            "description" : "unauthorized"
+          },
+          "403" : {
+            "description" : "forbidden"
+          },
+          "404" : {
+            "description" : "not found"
+          }
+        }
+      }
     }
   },
   "definitions" : {
@@ -6941,6 +8023,13 @@
                   "type" : "string"
                 }
               },
+              "facility" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "string"
+                },
+                "description" : "Array of facility codes the batch can use for provisioning. This param also takes a string if you want the batch to be fulfilled in only one facility."
+              },
               "description" : {
                 "type" : "string"
               },
@@ -7029,41 +8118,6 @@
               }
             }
           }
-        }
-      }
-    },
-    "Email" : {
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "address" : {
-          "type" : "string"
-        },
-        "default" : {
-          "type" : "boolean"
-        },
-        "verified" : {
-          "type" : "boolean"
-        },
-        "href" : {
-          "type" : "string"
-        }
-      }
-    },
-    "CreateEmailInput" : {
-      "required" : [ "address" ],
-      "properties" : {
-        "address" : {
-          "type" : "string"
-        }
-      }
-    },
-    "UpdateEmailInput" : {
-      "properties" : {
-        "default" : {
-          "type" : "boolean"
         }
       }
     },
@@ -8607,7 +9661,8 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Href"
-          }
+          },
+          "description" : "A list of instances with ports currently associated to this Virtual Network."
         },
         "assigned_to" : {
           "$ref" : "#/definitions/Href"
@@ -8627,13 +9682,8 @@
           "type" : "string"
         },
         "facility" : {
-          "type" : "string"
-        },
-        "vxlan" : {
-          "type" : "integer"
-        },
-        "vlan" : {
-          "type" : "integer"
+          "type" : "string",
+          "description" : "The UUID (or facility code) for the Facility in which to create this Virtual network."
         }
       }
     },
@@ -8946,6 +9996,7 @@
         },
         "available_in" : {
           "type" : "array",
+          "description" : "Shows which facilities the plan is available in, and the facility-based price if it is different from the default price.",
           "items" : {
             "$ref" : "#/definitions/Href"
           }
@@ -9021,7 +10072,8 @@
     "PortAssignInput" : {
       "properties" : {
         "vnid" : {
-          "type" : "string"
+          "type" : "string",
+          "description" : "The UUID of the Virtual Network record, or the VLAN value itself (ex: '1001')."
         }
       }
     },
@@ -10338,6 +11390,41 @@
         },
         "meta" : {
           "$ref" : "#/definitions/Meta"
+        }
+      }
+    },
+    "Email" : {
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "default" : {
+          "type" : "boolean"
+        },
+        "verified" : {
+          "type" : "boolean"
+        },
+        "href" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CreateEmailInput" : {
+      "required" : [ "address" ],
+      "properties" : {
+        "address" : {
+          "type" : "string"
+        }
+      }
+    },
+    "UpdateEmailInput" : {
+      "properties" : {
+        "default" : {
+          "type" : "boolean"
         }
       }
     }
